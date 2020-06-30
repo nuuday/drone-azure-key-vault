@@ -1,0 +1,23 @@
+kind: pipeline
+name: default
+
+steps:
+- name: build
+  image: golang:1.14
+  commands:
+  - go test -v ./...
+  - sh scripts/build.sh
+
+- name: publish_amd64
+  image: plugins/docker
+  settings:
+    custom_dns:
+      from_secret: custom_dns
+    repo:
+      from_secret: docker_repo
+    registry:
+      from_secret: docker_registry
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
